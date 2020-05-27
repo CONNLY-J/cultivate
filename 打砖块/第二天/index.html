@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>打砖块</title>
+    <style>
+        canvas{
+            border: 1px solid rgb(238, 105, 28);
+        }
+        #id-input{
+            display: block;
+            width: 200px;
+            height: 100px;
+        }
+    </style>
+    
+    <script src='ball.js'></script>
+    <script src='block.js'></script>
+    <script src='board.js'></script>
+    <script src='level.js'></script>
+    <script src='playGame.js'></script>
+</head>
+<body>
+    <canvas id="id-canvas" width="1000" height="480"></canvas>
+    <input id="id-input" type="range" value="1">
+    <script>
+        /*
+        * 定义图片来源路径
+        */
+        var imgPath = function(path){
+            var image = new Image();
+            image.src = path;
+            return image;
+        }
+        var loadLevel = function(n){
+            n = n-1
+            var level = levels[n]
+            var blocks = []
+            for (var i=0;i<level.length;i++){
+                var p = level[i]
+                var b = Blocks(p)
+                blocks.push(b)
+            }
+            return blocks
+        }
+
+        var blocks = []
+        var enableDebugMode = function(enable) {
+    if(!enable) {
+        return
+    }
+    window.paused = false
+    window.addEventListener('keydown', function(event){
+        var k = event.key
+        if (k == 'p') {
+            // 暂停功能
+            window.paused = !window.paused
+        } else if ('1234567'.includes(k)) {
+           //关卡功能
+            blocks = loadLevel(Number(k))
+        }
+    })
+    // 滑动进度条控制小球移动的速度
+    document.querySelector('#id-input').addEventListener('input', function(event) {
+        var input = event.target
+        console.log(event, input.value)
+        window.fps = Number(input.value)
+    })
+}
+        var main = function(){
+            enableDebugMode(true)
+            var board = Board()
+            var game = PlayGame(30);
+            var ball = Ball();
+            // var block = Blocks()
+            blocks = loadLevel(1)
+            var paused = false
+            game.action('a', function(){
+            board.moveLeft()
+    })
+        game.action('d', function(){
+        board.moveRight()
+    })
+        game.action('f', function(){
+        ball.move()
+    })
+        game.update = function() {
+            if(window.paused){
+                return
+            }
+        ball.play()
+        
+        //砖块和小球碰撞的处理
+        if (board.crash(ball)) {
+            ball.speedY *= -1
+        }
+        for (var i = 0; i < blocks.length; i++) {
+            var block = blocks[i]
+            if (block.crash(ball)) {
+                // log('block 相撞')
+                block.kill()
+                ball.rev()
+            }
+        }
+        
+    }
+        game.draw = function() {
+        game.drawImage(board)
+        game.drawImage(ball)
+        for (var i = 0; i < blocks.length; i++) {
+            var block = blocks[i]
+            if (block.alive) {
+                game.drawImage(block)
+            }
+        }
+    }
+        }
+        main()
+    </script>
+</body>
+</html>
