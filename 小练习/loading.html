@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>loading</title>
+    <style>
+        .loading{
+            width: 100px;
+            height: 100px;
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           border: 1px solid #000;
+        }
+        .loading span{
+            border-radius: 50%;
+            background-color: rgb(71, 71, 71);
+            width: 20px;
+            height: 20px;
+            margin: 0 5px;
+            animation: loading 0.6s infinite alternate;
+        }
+        @keyframes loading {
+            from{
+                opacity: 0.5;
+                transform: translateY(0);
+            }
+            to{
+                opacity: 0.2;
+                transform: translateY(-20px);
+            }
+        }
+        .loading>span:nth-child(2){
+            animation-delay: 0.3s;
+        }
+        .loading>span:nth-child(3){
+            animation-delay: 0.6s;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</body>
+</html>
